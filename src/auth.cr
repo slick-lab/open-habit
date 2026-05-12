@@ -20,16 +20,17 @@ end
   en_pass = Db.get_pass_by_email(email)
   unless en_pass 
    {success: false, message: "cannot get password"}.to_json
+   return
   end
-  hash = Crypto::Bcrypt::Password.create(password, cost: 10)
-  if en_pass === hash
+   hash = Crypto::Bcrypt::Password.new(en_pass)
+  if hash.verify(password)
     generate_token(email)
   else
    {success: false, message: "incorrect password"}.to_json
   end 
 end 
 
-def generate_token(email : String)
+def self.generate_token(email : String)
  payload = {"email" => email}
  key = ENV["TOKEN"]
  token = JWT.encode(payload, key, JWT::Algorithm::HS256)
