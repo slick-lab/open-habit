@@ -36,5 +36,17 @@ def self.generate_token(email : String)
  token = JWT.encode(payload, key, JWT::Algorithm::HS256)
  {success: true, message: "user logged authorized", token: token}.to_json
 end 
+
+def self.validate_token(token : String)
+ key = ENV["TOKEN"]
+ payload = JWT.decode(token, key, JWT::Algorithm::HS256)
+ email = payload["email"]
+ user = Sb.look_email_up(email)
+  if user == true
+   {success: true, message: "token has been verified"}.to_json
+  else 
+   return {success: true, message: "wrong token"}.to_json
+  end 
+ end 
 end 
     
