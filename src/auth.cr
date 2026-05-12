@@ -39,13 +39,13 @@ end
 
 def self.validate_token(token : String)
  key = ENV["TOKEN"]
- payload = JWT.decode(token, key, JWT::Algorithm::HS256)
+ payload, header = JWT.decode(token, key, JWT::Algorithm::HS256)
  email = payload["email"]
- user = Sb.look_email_up(email)
+ user = Db.look_email_up(email)
   if user == true
    {success: true, message: "token has been verified"}.to_json
   else 
-   return {success: true, message: "wrong token"}.to_json
+   return {success: false, message: "wrong token"}.to_json
   end 
  end 
 end 
