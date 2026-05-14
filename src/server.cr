@@ -12,10 +12,9 @@ before_all do |env|
 end
 
 post "/signup" do |env|
-  params = JSON.parse(env.request.body.not_nil!)
-  email = params["email"].as_s
-  password = params["password"].as_s
-  username = params["username"].as_s
+  email = env.params.json["email"].as(String)
+  password = env.params.json["password"].as(String)
+  username = env.params.json["username"].as(String)
   
   result = Auth.signup(email, password, username)
   result
@@ -48,13 +47,13 @@ post "/daily-action" do |env|
     result = Habit.get_daily_action(
       habit,
       previous_action: yesterday_action,
-      user_result: yesterday_completed,
+      user_results: yesterday_completed,
       day: yesterday_day + 1
     )
     day = yesterday_day + 1
   end
   
-  Habit.save_progress(user_id, habit, result["action"].to_s, false, day, Time.utc)
+  Habit.save_progress(user_id, habit, result["action"].to_s, false, day)
   result.to_json
 end
 

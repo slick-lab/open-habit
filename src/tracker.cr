@@ -16,6 +16,11 @@ module Tracker
     Db.get_todays_progress(user_id, today)
   end
 
+  def self.get_yesterday_result(user_id : Int32)
+    yesterday = (Time.utc - 1.day).to_s("%Y-%m-%d")
+    Db.get_progress_by_date(user_id, yesterday)
+  end
+
   def self.get_week_progress(user_id : Int32)
     week_ago = (Time.utc - 7.days).to_s("%Y-%m-%d")
     Db.get_progress_range(user_id, week_ago, Time.utc.to_s("%Y-%m-%d"))
@@ -33,7 +38,7 @@ module Tracker
     loop do
       date_str = current_date.to_s("%Y-%m-%d")
       day = progress.find { |p| p["date"] == date_str }
-      break if day.nil? || !day["completed"].as_bool
+      break if day.nil? || !!day["completed"]
       streak += 1
       current_date = current_date - 1.day
     end

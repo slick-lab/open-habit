@@ -3,7 +3,7 @@ require "jwt"
 
 module Auth
   def self.signup(email : String, password : String, username : String)
-    hash = Crypto::Bcrypt::Password.create(password, cost: 10)
+    hash = Crypto::Bcrypt::Password.create(password, cost: 10).to_s
     check = Db.look_email_up(email)
     user1 = Db.check_username(username)
     if check == true
@@ -40,7 +40,7 @@ end
 def self.validate_token(token : String)
  key = ENV["TOKEN"]
  payload, header = JWT.decode(token, key, JWT::Algorithm::HS256)
- email = payload["email"]
+ email = payload["email"].to_s
  user = Db.look_email_up(email)
   if user == true
    {success: true, message: "token has been verified"}.to_json

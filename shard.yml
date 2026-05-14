@@ -1,0 +1,11 @@
+name: open-habit
+version: 0.1.0
+
+dependencies:
+  kemal:
+    github: kemalcr/kemal
+  jwt:
+    github: crystal-community/jwt
+  pg:
+    github: will/crystal-pg
+  
