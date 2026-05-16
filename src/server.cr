@@ -1,8 +1,8 @@
 # server.cr
 require "kemal"
 require "json"
-require "./db"
 require "./auth"
+require "./db"
 require "./habit"
 require "./tracker"
 

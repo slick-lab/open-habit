@@ -7,7 +7,7 @@ class Start
 
     def send_start_message
         @bot.command('start') do |ctx|
-          text = welcome to open-habit bot and here you can track your habits and achieve your goals!
+          text = "welcome to open-habit bot and here you can track your habits and achieve your goals!"
           ctx.reply(text)
           user_id = ctx.from.id
           send = send_to_server(user_id)
