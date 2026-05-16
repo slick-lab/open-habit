@@ -7,26 +7,20 @@ require "./habit"
 require "./tracker"
 
 
-before_all do |env|
-  env.response.headers["Content-Type"] = "application/json"
-end
-
-post "/signup" do |env|
-  email = env.params.json["email"].as(String)
-  password = env.params.json["password"].as(String)
-  username = env.params.json["username"].as(String)
-  
-  result = Auth.signup(email, password, username)
-  result
-end
-
-post "/login" do |env|
+post "/register" do |env|
   params = JSON.parse(env.request.body.not_nil!)
-  email = params["email"].as_s
-  password = params["password"].as_s
-  
-  result = Auth.login(email, password)
-  result
+  user_id = params["user_id"].as_i
+  check = Auth.check_user_exists(user_id)
+  if check.nil?
+    register = Auth.register_user(user_id)
+    if register
+      {success: true, message: "User registered successfully"}.to_json
+    else
+      {success: false, message: "Failed to register user"}.to_json
+    end
+  else
+    {success: false, message: "User already exists"}.to_json
+  end
 end
 
 post "/daily-action" do |env|
@@ -86,12 +80,6 @@ get "/progress/:user_id/week" do |env|
   week_progress.to_json
 end
 
-post "/validate-token" do |env|
-  token = env.params.json["token"].as(String)
-  
-  result = Auth.validate_token(token)
-  result
-end
 
 Db.setup
 
